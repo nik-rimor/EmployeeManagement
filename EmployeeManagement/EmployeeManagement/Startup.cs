@@ -30,20 +30,21 @@ namespace EmployeeManagement
         {
             if (env.IsDevelopment())
             {
+                DeveloperExceptionPageOptions developerExceptionPageOptions = new DeveloperExceptionPageOptions
+                {
+                    SourceCodeLineCount = 10
+                };
                 app.UseDeveloperExceptionPage();
             }
 
-            FileServerOptions fileServerOptions = new FileServerOptions();
-            fileServerOptions.DefaultFilesOptions.DefaultFileNames.Clear();
-            fileServerOptions.DefaultFilesOptions.DefaultFileNames.Add("foo.html");
-            app.UseFileServer(fileServerOptions);
 
-
+            app.UseFileServer();
 
             app.UseRouting();
 
             app.Run(async context =>
             {
+                throw new Exception("Some error processing the request");
                 await context.Response.WriteAsync("Hello world!");
             });
 
