@@ -26,37 +26,24 @@ namespace EmployeeManagement
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-                              ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            DefaultFilesOptions defaultFilesOptions = new DefaultFilesOptions();
+            defaultFilesOptions.DefaultFileNames.Clear();
+            defaultFilesOptions.DefaultFileNames.Add("foo.html");
+            app.UseDefaultFiles(defaultFilesOptions);
+            app.UseStaticFiles();
+
             app.UseRouting();
-
-            app.Use(async (context, next) =>
-            {
-                logger.LogInformation("M1: request received");
-                await context.Response.WriteAsync("Hello from 1st Middleware!");
-                await next();
-                logger.LogInformation("M1: response produced");
-            });
-
-            app.Use(async (context, next) =>
-            {
-                logger.LogInformation("M2: request received");
-                await context.Response.WriteAsync("Hello from 2nd Middleware!");
-                await next();
-                logger.LogInformation("M2: response produced");
-            });
 
             app.Run(async context =>
             {
-                logger.LogInformation("Request reqceiver from Terminal middleware");
-                await context.Response.WriteAsync("Hello from 3rd Middleware!");
-                logger.LogInformation("Response generated from Terminal midleware");
+                await context.Response.WriteAsync("Hello world!");
             });
 
             //app.UseEndpoints(endpoints =>
