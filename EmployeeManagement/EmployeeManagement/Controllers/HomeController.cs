@@ -25,9 +25,8 @@ namespace EmployeeManagement.Controllers
         public ViewResult Details()
         {
             Employee model = _employeeRepository.GetEmployee(1);
-            ViewBag.Employee = model;
-            ViewBag.PageTitle = "Employee Details";
-            return View();
+            ViewBag.PageTitle = "Eployee Details";
+            return View(model);
         }
     }
 }
