@@ -17,6 +17,11 @@ namespace EmployeeManagement.Controllers
             _employeeRepository = employeeRepository;
         }
 
+        // Attribute routing on the method
+        [Route("")] //  path is root  '  /  '
+        [Route("Home")] // path is '  /Home  '
+        [Route("Home/Index")]  // path is '  /Home/Index '
+
         public ViewResult Index()
         {
             var  model = _employeeRepository.GetAllEmployee();
@@ -24,11 +29,13 @@ namespace EmployeeManagement.Controllers
 
         }
 
-        public ViewResult Details(int id)
+        // using token replacement
+        [Route("Home/[action]/{id?}")]
+        public ViewResult Details(int? id)
         {
             HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel
             {
-                Employee = _employeeRepository.GetEmployee(1),
+                Employee = _employeeRepository.GetEmployee(id??1),
                 PageTitle = "Employee Details"
             };
             return View(homeDetailsViewModel);
