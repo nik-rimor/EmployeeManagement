@@ -51,7 +51,7 @@ namespace EmployeeManagement
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers(); // Add MapControllers if the app uses attribute routing
+                //endpoints.MapControllers(); // Add MapControllers if the app uses attribute routing
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
