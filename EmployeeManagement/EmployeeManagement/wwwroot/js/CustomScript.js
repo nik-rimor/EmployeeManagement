@@ -1,0 +1,1 @@
+﻿//alert("This is the details page");
