@@ -26,7 +26,9 @@ namespace EmployeeManagement
         {
             services.AddSingleton<IEmployeeRepository, MockEmployeeRepository>();
 
-            services.AddMvc(option => option.EnableEndpointRouting = false);
+            //services.AddMvc(option => option.EnableEndpointRouting = false);
+            services.AddControllersWithViews();
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,13 +36,26 @@ namespace EmployeeManagement
         {
             if (env.IsDevelopment())
             {
-
                 app.UseDeveloperExceptionPage();
             }
 
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
+            //app.UseSession(); //Before Use.Routing()
 
-            app.UseMvcWithDefaultRoute();
+            app.UseRouting();
+
+            //app.UseCors();
+            //app.UseAuthentication();
+            //app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                //endpoints.MapRazorPages(); // needed bacause Identity added Razor Pages
+            });
 
         }
     }
