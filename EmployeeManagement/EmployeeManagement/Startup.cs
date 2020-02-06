@@ -55,7 +55,7 @@ namespace EmployeeManagement
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                //endpoints.MapRazorPages(); // needed bacause Identity added Razor Pages
+                //endpoints.MapRazorPages(); // needed when using Identity bc it adds Razor Pages
             });
 
         }
