@@ -5,6 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200207051212_addPhotoToEmployeeModel.cs" />
+    <Compile Remove="Migrations\20200207051212_addPhotoToEmployeeModel.Designer.cs" />
+    <Compile Remove="Migrations\20200207051320_addPhotoToEmployeeModel.cs" />
+    <Compile Remove="Migrations\20200207051320_addPhotoToEmployeeModel.Designer.cs" />
+    <Compile Remove="Migrations\20200207164704_correctPhotoPathColumn.cs" />
+    <Compile Remove="Migrations\20200207164704_correctPhotoPathColumn.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">
       <PrivateAssets>all</PrivateAssets>

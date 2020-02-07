@@ -5,3 +5,8 @@
 .profile-image {
     border-radius: 50%;
 }
+
+.imageThumbnail {
+    height:200px;
+    width:auto;
+}
