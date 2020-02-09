@@ -1,6 +1,7 @@
 ﻿using EmployeeManagement.Models;
 using EmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagement.Controllers
 {
-    
+
     public class HomeController : Controller
     {
         private readonly IEmployeeRepository _employeeRepository;
@@ -25,7 +26,7 @@ namespace EmployeeManagement.Controllers
 
         public ViewResult Index()
         {
-            var  model = _employeeRepository.GetAllEmployee();
+            var model = _employeeRepository.GetAllEmployee();
             return View(model);
 
         }
@@ -34,7 +35,7 @@ namespace EmployeeManagement.Controllers
         {
             HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel
             {
-                Employee = _employeeRepository.GetEmployee(id??1),
+                Employee = _employeeRepository.GetEmployee(id ?? 1),
                 PageTitle = "Employee Details"
             };
             return View(homeDetailsViewModel);
@@ -49,16 +50,10 @@ namespace EmployeeManagement.Controllers
         [HttpPost]
         public IActionResult Create(EmployeeCreateViewModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                string uniqueFileName = null;
-                if(model.Photo != null)
-                {
-                    string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Photo.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    model.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
-                }
+                // Get Image uploaded path
+                string uniqueFileName = ProcessUploadedFile(model.Photo);
                 Employee newEmployee = new Employee
                 {
                     Name = model.Name,
@@ -67,9 +62,90 @@ namespace EmployeeManagement.Controllers
                     PhotoPath = uniqueFileName
                 };
                 _employeeRepository.Add(newEmployee);
-                return RedirectToAction(nameof(Details), new { id = newEmployee.Id});
+                return RedirectToAction(nameof(Details), new { id = newEmployee.Id });
             }
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Employee employeeFromDB = _employeeRepository.GetEmployee(id.Value);
+            EmployeeEditViewModel model = new EmployeeEditViewModel
+            {
+                Id = employeeFromDB.Id,
+                Name = employeeFromDB.Name,
+                Email = employeeFromDB.Email,
+                Department = employeeFromDB.Department,
+                ExistingPhotoPath = employeeFromDB.PhotoPath
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(EmployeeEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {                
+                return View(model);
+            }
+
+            Employee employeeFromDB = _employeeRepository.GetEmployee(model.Id);
+            if (employeeFromDB == null)
+            {
+                return NotFound();
+            }
+
+            // Update retrieved employee
+            employeeFromDB.Name = model.Name;
+            employeeFromDB.Email = model.Email;
+            employeeFromDB.Department = model.Department;
+            // Check if photo has changed
+            if (model.Photo != null)
+            {
+                employeeFromDB.PhotoPath = ProcessUploadedFile(model.Photo);
+                if(model.ExistingPhotoPath != null)
+                {
+                    RemoveExitstingPhoto(model.ExistingPhotoPath);
+                }
+            } 
+            // Remove old Photo
+            employeeFromDB = _employeeRepository.Update(employeeFromDB);
+            return RedirectToAction(nameof(Details), new { id = employeeFromDB.Id });
+
+        }
+
+        [NonAction]
+        private string ProcessUploadedFile(IFormFile uploadedFile)
+        {
+            string uniqueFileName = null;
+            if (uploadedFile != null)
+            {
+                string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + uploadedFile.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    uploadedFile.CopyTo(fileStream);
+                }
+            }
+            return uniqueFileName;
+        }
+
+        [NonAction]
+        private void RemoveExitstingPhoto(string existingPhoto)
+        {
+            string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
+            string filePath = Path.Combine(uploadsFolder, existingPhoto);
+            if(System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
         }
     }
 }

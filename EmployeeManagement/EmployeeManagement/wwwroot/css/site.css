@@ -2,11 +2,21 @@
     width: 75px;
 }
 
+.brand-image {
+    height:30px;
+    border-radius:50%;
+}
+
 .profile-image {
-    border-radius: 50%;
+    height: 400px;
+    width: auto;
+    border: 1px solid #efefef;
+
 }
 
 .imageThumbnail {
     height:200px;
     width:auto;
 }
+
+
