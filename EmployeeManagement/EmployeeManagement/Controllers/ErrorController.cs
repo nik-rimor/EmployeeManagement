@@ -25,8 +25,8 @@ namespace EmployeeManagement.Controllers
             return View("NotFound");
         }
 
-        [Route("Error")]
         [AllowAnonymous]
+        [Route("Error")]
         public IActionResult Error()
         {
             var exceptionDetails = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
