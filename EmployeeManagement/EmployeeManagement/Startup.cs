@@ -6,6 +6,7 @@ using EmployeeManagement.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,9 @@ namespace EmployeeManagement
             services.AddDbContextPool<AppDbContext>(options =>
                             options.UseSqlServer(_config.GetConnectionString("EmployeeDBConnection")));
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>();
 
             //services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddControllersWithViews();
@@ -56,7 +60,7 @@ namespace EmployeeManagement
             app.UseRouting();
 
             //app.UseCors();
-            //app.UseAuthentication();
+            app.UseAuthentication();
             //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -65,7 +69,7 @@ namespace EmployeeManagement
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                //endpoints.MapRazorPages(); // needed when using Identity bc it adds Razor Pages
+                endpoints.MapRazorPages(); // needed when using Identity bc it adds Razor Pages
             });
 
         }

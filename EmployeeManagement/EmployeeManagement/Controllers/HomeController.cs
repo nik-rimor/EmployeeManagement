@@ -122,7 +122,7 @@ namespace EmployeeManagement.Controllers
             {
                 logger.LogError("Requested Employee does not exist in databse");
                 Response.StatusCode = 404;
-                return View("EmployeeNotFound", id.Value);
+                return View("EmployeeNotFound", model.Id);
             }
 
             // Update retrieved employee
