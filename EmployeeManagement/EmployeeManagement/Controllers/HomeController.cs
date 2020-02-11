@@ -37,15 +37,14 @@ namespace EmployeeManagement.Controllers
 
         public IActionResult Details(int? id)
         {
-            logger.LogTrace("TraceLog");
-            logger.LogDebug("DebugLog");
-            logger.LogInformation("Information Log");
-            logger.LogWarning("WarningLog");
-            logger.LogError("ErrorLog");
-            logger.LogCritical("CriticalLog");
-            Employee employee = _employeeRepository.GetEmployee(id ?? 1);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Employee employee = _employeeRepository.GetEmployee(id.Value);
             if(employee == null)
             {
+                logger.LogError("Requested Employee does not exist in databse");
                 Response.StatusCode = 404;
                 return View("EmployeeNotFound", id.Value);
             }
@@ -93,6 +92,12 @@ namespace EmployeeManagement.Controllers
             }
 
             Employee employeeFromDB = _employeeRepository.GetEmployee(id.Value);
+            if (employeeFromDB == null)
+            {
+                logger.LogError("Requested Employee does not exist in databse");
+                Response.StatusCode = 404;
+                return View("EmployeeNotFound", id.Value);
+            }
             EmployeeEditViewModel model = new EmployeeEditViewModel
             {
                 Id = employeeFromDB.Id,
@@ -115,7 +120,9 @@ namespace EmployeeManagement.Controllers
             Employee employeeFromDB = _employeeRepository.GetEmployee(model.Id);
             if (employeeFromDB == null)
             {
-                return NotFound();
+                logger.LogError("Requested Employee does not exist in databse");
+                Response.StatusCode = 404;
+                return View("EmployeeNotFound", id.Value);
             }
 
             // Update retrieved employee
