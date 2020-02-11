@@ -3,6 +3,7 @@ using EmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,12 +17,15 @@ namespace EmployeeManagement.Controllers
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly ILogger logger;
 
         public HomeController(IEmployeeRepository employeeRepository,
-                              IWebHostEnvironment webHostEnvironment)
+                              IWebHostEnvironment webHostEnvironment,
+                              ILogger<HomeController> logger)
         {
             _employeeRepository = employeeRepository;
             this.webHostEnvironment = webHostEnvironment;
+            this.logger = logger;
         }
 
         public ViewResult Index()
@@ -33,8 +37,12 @@ namespace EmployeeManagement.Controllers
 
         public IActionResult Details(int? id)
         {
-            throw new Exception("Error in Details View");
-
+            logger.LogTrace("TraceLog");
+            logger.LogDebug("DebugLog");
+            logger.LogInformation("Information Log");
+            logger.LogWarning("WarningLog");
+            logger.LogError("ErrorLog");
+            logger.LogCritical("CriticalLog");
             Employee employee = _employeeRepository.GetEmployee(id ?? 1);
             if(employee == null)
             {
