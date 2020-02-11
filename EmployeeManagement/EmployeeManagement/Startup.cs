@@ -34,6 +34,17 @@ namespace EmployeeManagement
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>();
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                //Password Settings
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 1;
+            });
+
             //services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddControllersWithViews();
             services.AddRazorPages();
