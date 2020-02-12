@@ -14,7 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace EmployeeManagement
-{
+{    
     public class Startup
     {
         private readonly IConfiguration _config;
@@ -72,7 +72,7 @@ namespace EmployeeManagement
 
             //app.UseCors();
             app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
