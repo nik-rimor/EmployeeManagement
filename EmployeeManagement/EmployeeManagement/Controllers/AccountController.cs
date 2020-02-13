@@ -63,6 +63,13 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
 
+        [AcceptVerbs("Get", "Post")]
+        [AllowAnonymous]
+        public async Task<IActionResult> IsEmailInUse(string email)
+        {
+            return Json((await userManager.FindByEmailAsync(email) == null) ? (object)true : $"Email {email} is already in use");
+        }
+
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
@@ -79,13 +86,25 @@ namespace EmployeeManagement.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if(ModelState.IsValid)
             {
                 var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
                 if(result.Succeeded)
                 {
+                    if(!string.IsNullOrEmpty(returnUrl))
+                    {
+                        if(Url.IsLocalUrl(returnUrl))
+                        {
+                            return Redirect(returnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("index", "home");
+                        }
+                    }
+                        
                     return RedirectToAction("index", "home");
                 }
                 
