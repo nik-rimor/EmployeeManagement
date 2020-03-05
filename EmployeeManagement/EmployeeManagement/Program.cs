@@ -28,7 +28,7 @@ namespace EmployeeManagement
                     logging.ClearProviders();
                     logging.AddDebug();
                     logging.AddConsole();
-                    logging.SetMinimumLevel(LogLevel.Trace);
+                    logging.SetMinimumLevel(LogLevel.Warning);
                 })
                 .UseNLog();
                 

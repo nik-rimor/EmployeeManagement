@@ -36,12 +36,15 @@ namespace EmployeeManagement.Controllers
             return View("NotFound");
         }
 
+        // we want htis method to be executed if route the path is "/Error"
+        // se we use ottribute routing for that
         [AllowAnonymous]
         [Route("Error")]
         public IActionResult Error()
         {
             var exceptionDetails = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-            logger.LogError($"The path {exceptionDetails.Path} threw an exception {exceptionDetails.Error}");
+            logger.LogError($"The path {exceptionDetails.Path} threw an exception {exceptionDetails.Error} " +
+                            $" and error message : {exceptionDetails.Error.Message}");
 
             return View("Error");
         }
